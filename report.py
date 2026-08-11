@@ -215,7 +215,10 @@ def build_html(root_path, query, tree_root, ranked_items, answer, warning, meta)
   .twiggle {{ width: 16px; text-align: center; color: var(--muted); cursor: pointer; user-select: none; }}
   .ticon {{ width: 22px; text-align: center; flex: none; }}
   .ticon img {{ width: 20px; height: 20px; object-fit: cover; border-radius: 4px; cursor: zoom-in; vertical-align: middle; }}
-  .tname {{ color: var(--text); text-decoration: none; font-size: 13px; }}
+  .tname {{
+    color: var(--text); text-decoration: none; font-size: 13px; flex: none;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }}
   .tname:hover {{ color: var(--accent); text-decoration: underline; }}
   .tstars {{ font-size: 15px; letter-spacing: 1.5px; line-height: 1; flex: none; }}
   .tmeta {{ color: var(--muted); font-size: 11px; flex: none; }}
@@ -348,14 +351,16 @@ def build_html(root_path, query, tree_root, ranked_items, answer, warning, meta)
     name.className = 'tname';
     name.href = node.uri;
     name.textContent = node.name;
+    name.title = node.name;
+    // Фиксированная ширина имени (минус отступ вложенности), чтобы звёзды
+    // стояли в одну колонку.
+    name.style.width = Math.max(140, 300 - depth * 22) + 'px';
     row.appendChild(name);
 
-    if (node.rank) {{
-      const st = document.createElement('span');
-      st.className = 'tstars';
-      st.innerHTML = stars(node.score);
-      row.appendChild(st);
-    }}
+    const st = document.createElement('span');
+    st.className = 'tstars';
+    st.innerHTML = stars(node.rank ? node.score : 0);
+    row.appendChild(st);
 
     const meta = document.createElement('span');
     meta.className = 'tmeta';
