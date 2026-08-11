@@ -22,7 +22,7 @@ Remove-Item -Recurse -Force "release" -ErrorAction SilentlyContinue
 New-Item -ItemType Directory -Force $rel | Out-Null
 
 Copy-Item "dist\ClaudeSortBy.exe" $rel
-Copy-Item "metrics.json", "install.ps1", "uninstall.ps1", "install-with-claude.cmd", "FIX.md", "README.md" $rel
+Copy-Item "metrics.json", "install.ps1", "uninstall.ps1", "install-with-claude.cmd", "install-with-claude.ps1", "FIX.md", "README.md" $rel
 
 $zip = "release\ClaudeSortBy-win64.zip"
 Compress-Archive -Path "$rel\*" -DestinationPath $zip -Force
