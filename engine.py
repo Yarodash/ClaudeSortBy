@@ -132,8 +132,11 @@ def _run_claude(prompt, schema):
         return None, f"claude завершился с кодом {result.returncode}: {result.stderr[:300]}"
 
     try:
-        events = json.loads(result.stdout)
-        final = events[-1]
+        # Без --verbose CLI отдаёт один объект-результат, с --verbose — массив
+        # всех событий, где результат последний. Поддерживаем оба формата.
+        final = json.loads(result.stdout)
+        if isinstance(final, list):
+            final = next(e for e in reversed(final) if e.get("type") == "result")
         if final.get("is_error"):
             return None, str(final.get("result"))[:300]
         return final["structured_output"], None
